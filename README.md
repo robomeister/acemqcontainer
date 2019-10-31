@@ -1,6 +1,12 @@
 # Installing ACE/MQ into OpenShift using HELM with Minimal Permissions
 
-Steps 1 through 4 need to be executed by someone logged into OpenShift with `cluster-admin` privileges:
+Greetings!
+
+The instructions below are a step-by-step guide to install Tiller onto OpenShift, give it just enough permissions to install ACE/MQ, and then use the Helm client to install ACE/MQ using a helm chart.
+
+Steps 1-3 and steps 5-6 only need to be done once, and the others on a project-by-project basis.
+
+Additionally, steps 1-4 need to be executed by someone logged into OpenShift with `cluster-admin` privileges:
 
 ## Step 1 - Install Tiller
 
@@ -185,12 +191,17 @@ From you command line, type the following:
 ```
 helm repo add ibm-charts https://icr.io/helm/ibm-charts
 helm repo update
+```
+
+
+
+### Step 7 - Fetch Helm Chart and update values.yaml
+
+```
 helm fetch ibm-charts/ibm-ace-server-dev
 ```
 
-Decompress the `ibm-ace-server-dev-2.x.0.tgz` file and copy the ibm-ace-server-dev/values.yaml file up one level.
-
-### Step 7 - Update values.yaml
+Decompress the `ibm-ace-server-dev-2.x.0.tgz` file into a new directory and copy the ibm-ace-server-dev/values.yaml file up one level.
 
 Inside the values.yaml file, update the following properties:
 
