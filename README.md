@@ -314,7 +314,7 @@ NAME                     DESIRED   CURRENT   AGE
 ace-ibm-ace-server-dev   1         0         3m
 ```
 
-If current is indeed 0, then you can type `oc describe sts ace-ibm-ace-server-dev` to get an idea of what is going on.
+If `CURRENT` is indeed 0, then you can type `oc describe sts ace-ibm-ace-server-dev` to get an idea of what is going on.
 
 If you see something like this:
 
