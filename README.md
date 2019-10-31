@@ -1,6 +1,6 @@
 # Installing ACE/MQ into OpenShift using HELM with Minimal Permissions
 
-The following operations need to be executed by someone with `cluster-admin` privileges:
+Steps 1 through 4 need to be executed by someone logged into OpenShift with `cluster-admin` privileges:
 
 ## Step 1 - Install Tiller
 
@@ -55,7 +55,7 @@ Please note these permissions satisfy the requirements to install the ACE/MQ con
 
 If desired, once the install has completed, the permissions can be removed.  Please note, however, that when a helm update or delete is to occur, the permissions will need to be added again.
 
-## Step 3 - Create Proper Security Context
+## Step 3 - Create new Security Context
 
 If it doesn't yet already exist, create the `ibm-anyuid-scc` security context using the following template:
 
@@ -119,18 +119,17 @@ Copy the text into a file named `ibm-anyuid-scc.yaml` and execute the following 
 $ oc apply -f ./ibm-anyuid-scc.yaml
 ```
 
-## Step 4 - Create a Project for ACE/MQ and allow Tiller access
+## Step 4 - Create a Project for ACE/MQ, allow Tiller access, and set the Security Context
 
 Execute the following commands to create an `ace` project and allow tiller to install to this project:
 
 ```
 $ oc new project ace
 $ oc policy add-role-to-user admin "system:serviceaccount:tiller:tiller"
+$ oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:ace
 ```
 
-If desired, once the helm install has completed, the role can be removed.  Please note, however, that when a helm update or delete is to occur, the role will need to be added again.
-
-The environment is now ready.  The rest of the following commands can be executed by the user:
+The environment is now ready.  The rest of the following commands can be executed by the end user:
 
 ## Step 5 - Install Helm client onto Workstation
 
@@ -141,7 +140,7 @@ https://get.helm.sh/helm-v2.14.1-windows-amd64.zip
 https://get.helm.sh/helm-v2.14.1-linux-amd64.tar.gz
 ```
 
-Extract the helm.exe or helm binary and place it in an executable path.
+Extract the `helm.exe` or `helm` binary and place it in an executable path.
 
 You will also need the oc command line tool, you can download it for Windows and Linux here:
 
@@ -150,7 +149,7 @@ https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-c
 https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
 ```
 
-Extract the oc.exe and kubectl.exe or oc and kubectl executables and place them in an executable path.
+Extract the `oc.exe` and `kubectl.exe` or `oc` and `kubectl` executables and place them in an executable path.
 
 Once you have the tools installed, log into OpenShift on the command line and verify the helm and tiller install:
 
@@ -160,6 +159,7 @@ For Windows:
  oc login <openshift endpoint> --username=username --password=password
  set TILLER_NAMESPACE=tiller
  helm version
+ helm init --client-only
 ```
 
 For Linux:
@@ -168,6 +168,7 @@ For Linux:
 $ oc login <openshift endpoint> --username=username --password=password
 $ export TILLER_NAMESPACE=tiller
 $ helm version
+$ helm init --client-only
 ```
 
 You should see the following:
@@ -177,5 +178,56 @@ Client: &version.Version{SemVer:"v2.14.1", GitCommit:"5270352a09c7e8b6e8c9593002
 Server: &version.Version{SemVer:"v2.14.1", GitCommit:"5270352a09c7e8b6e8c9593002a73535276507c0", GitTreeState:"clean"}
 ```
 
+### Step 6 - Add the ibm-charts repo and fetch the ACE/MQ helm chart
 
+From you command line, type the following:
 
+```
+helm repo add ibm-charts https://icr.io/helm/ibm-charts
+helm repo update
+helm fetch ibm-charts/ibm-ace-server-dev
+```
+
+Decompress the `ibm-ace-server-dev-2.x.0.tgz` file and copy the ibm-ace-server-dev/values.yaml file up one level.
+
+### Step 7 - Update values.yaml
+
+Inside the values.yaml file, update the following properties:
+
+```
+license: "accept"
+imageType: acemqserver
+dashboardEnabled: false
+```
+We disable the monitoring dashboard, as it is Cloud Pak dependant and we are install ACE/MQ on its own.
+
+If your contianer images are available locally, then update the following properties:
+
+```
+image:
+  aceonly: ibmcom/ace:11.0.0.5.1
+  acemqclient: ibmcom/ace-mqclient:11.0.0.5.1
+  acemq: ibmcom/ace-mq:11.0.0.5.1
+  configurator: ibmcom/ace-icp-configurator:11.0.0.5.1
+  designerflows: ibmcom/ace-designer-flows:11.0.0.5.1
+  pullPolicy: IfNotPresent
+  pullSecret:
+```
+
+Finally, you will want to update the storage class name property to the dynamic storage class that will create the persistant storage for MQ:
+
+```
+storageClassName: ""
+```
+
+### Step 8 - Install ACE/MQ
+
+Perform the following commands:
+
+```
+oc project ace
+set TILLER_NAMESPACE=tiller
+helm install -n ace -f ./values.yaml ./ibm-ace-server-dev
+```
+
+This assumes your customized `values.yaml` file is in the local directory and the rest of the helm chart files are in `ibm-ace-server-dev`
