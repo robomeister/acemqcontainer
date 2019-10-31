@@ -13,9 +13,9 @@ Additionally, steps 1-4 need to be executed by someone logged into OpenShift wit
 Install Tiller into it's own namespace:
 
 ```
-$ oc new project tiller
-$ export TILLER_NAMESPACE=tiller
-$ oc process -f https://github.com/openshift/origin/raw/master/examples/helm/tiller-template.yaml -p TILLER_NAMESPACE="${TILLER_NAMESPACE}" -p HELM_VERSION=v2.14.1 | oc create -f -
+oc new project tiller
+set TILLER_NAMESPACE=tiller
+oc process -f https://github.com/openshift/origin/raw/master/examples/helm/tiller-template.yaml -p TILLER_NAMESPACE="${TILLER_NAMESPACE}" -p HELM_VERSION=v2.14.1 | oc create -f -
 ```
 
 This template will create the service account `system:serviceaccount:tiller:tiller`
@@ -122,7 +122,7 @@ volumes:
 Copy the text into a file named `ibm-anyuid-scc.yaml` and execute the following command:
 
 ```
-$ oc apply -f ./ibm-anyuid-scc.yaml
+oc apply -f ./ibm-anyuid-scc.yaml
 ```
 
 ## Step 4 - Create a Project for ACE/MQ, allow Tiller access, and set the Security Context
@@ -130,9 +130,14 @@ $ oc apply -f ./ibm-anyuid-scc.yaml
 Execute the following commands to create an `ace` project and allow tiller to install to this project:
 
 ```
-$ oc new-project ace
-$ oc policy add-role-to-user admin "system:serviceaccount:tiller:tiller"
-$ oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:ace
+oc new-project ace
+oc policy add-role-to-user admin "system:serviceaccount:tiller:tiller"
+```
+
+Afterwards execute the following command to assign service accounts in the `ace` project to start processes in the `ibm-anyuid-scc` security context:
+
+```
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:ace
 ```
 
 The environment is now ready.  The rest of the following commands can be executed by the end user:
@@ -159,22 +164,11 @@ Extract the `oc.exe` and `kubectl.exe` or `oc` and `kubectl` executables and pla
 
 Once you have the tools installed, log into OpenShift on the command line and verify the helm and tiller install:
 
-For Windows:
-
 ```
  oc login <openshift endpoint> --username=username --password=password
  set TILLER_NAMESPACE=tiller
- helm version
  helm init --client-only
-```
-
-For Linux:
-
-```
-$ oc login <openshift endpoint> --username=username --password=password
-$ export TILLER_NAMESPACE=tiller
-$ helm version
-$ helm init --client-only
+ helm version
 ```
 
 You should see the following:
@@ -194,14 +188,13 @@ helm repo update
 ```
 
 
-
 ### Step 7 - Fetch Helm Chart and update values.yaml
 
 ```
 helm fetch ibm-charts/ibm-ace-server-dev
 ```
 
-Decompress the `ibm-ace-server-dev-2.x.0.tgz` file into a new directory and copy the ibm-ace-server-dev/values.yaml file up one level.
+Uncompress the `ibm-ace-server-dev-2.x.0.tgz` file into a new directory and copy the ibm-ace-server-dev/values.yaml file up one level.
 
 Inside the values.yaml file, update the following properties:
 
@@ -210,9 +203,10 @@ license: "accept"
 imageType: acemqserver
 dashboardEnabled: false
 ```
-We disable the monitoring dashboard, as it is Cloud Pak dependant and we are install ACE/MQ on its own.
 
-If your contianer images are available locally, then update the following properties:
+We disable the monitoring dashboard, as it is Cloud Pak dependant and we are installing ACE/MQ on its own.
+
+If your container images are available locally, then update the following properties:
 
 ```
 image:
