@@ -51,7 +51,7 @@ Copy the above text into `tiller-roles.yaml` and execute the following command:
 
 `oc apply -f ./tiller-roles.yaml`
 
-Please note these permissions satisfy the requirements to install the ACE/MQ container only.  Other helm charts may require the same, more or less permissions.  Most organizations simply assign the `cluster-admin` role to the tiller service account.
+Please note these permissions satisfy the requirements to install the ACE/MQ helm chart only.  Other helm charts may require the same, more or less permissions.  Most organizations simply assign the `cluster-admin` role to the tiller service account.
 
 If desired, once the install has completed, the permissions can be removed.  Please note, however, that when a helm update or delete is to occur, the permissions will need to be added again.
 
