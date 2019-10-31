@@ -231,3 +231,52 @@ helm install -n ace -f ./values.yaml ./ibm-ace-server-dev
 ```
 
 This assumes your customized `values.yaml` file is in the local directory and the rest of the helm chart files are in `ibm-ace-server-dev`
+
+You should then see something like this:
+
+```
+NAME:   ace
+LAST DEPLOYED: Thu Oct 31 11:12:26 2019
+NAMESPACE: ace
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/Role
+NAME                          AGE
+ace-ibm-ace-server-dev-role  1s
+
+==> v1/RoleBinding
+NAME                                 AGE
+ace-ibm-ace-server-dev-rolebinding  1s
+
+==> v1/Service
+NAME                                 TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)                                                                     AGE
+ace-ibm-ace-server-dev              NodePort   172.21.201.76  <none>       7600:32606/TCP,7800:30248/TCP,7843:30251/TCP,9443:30392/TCP,1414:32764/TCP  1s
+ace-ibm-ace-server-dev-ace-metrics  ClusterIP  172.21.9.144   <none>       9483/TCP                                                                    1s
+ace-ibm-ace-server-dev-mq-metrics   ClusterIP  172.21.62.250  <none>       9157/TCP                                                                    1s
+
+==> v1/ServiceAccount
+NAME                                    SECRETS  AGE
+ace-ibm-ace-server-dev-serviceaccount  2        1s
+
+==> v1/StatefulSet
+NAME                     READY  AGE
+ace-ibm-ace-server-dev  0/1    1s
+
+
+NOTES:
+
+If you launched the deploy from the ACE Dashboard, then you can return to the ACE Dashboard to manage the server.
+
+The HTTP and HTTPS endpoints for the ACE Integration Server are exposed with a NodePort by default.
+
+export ACE_NODE_IP=$(kubectl get configmap -n kube-public ibmcloud-cluster-info   -o jsonpath="{.data.proxy_address}")
+export ACE_HTTP_PORT=$(kubectl get service ace2-ibm-ace-server-dev --namespace ace2 -o jsonpath="{.spec.ports[1].nodePort}")
+export ACE_HTTPS_PORT=$(kubectl get service ace2-ibm-ace-server-dev --namespace ace2 -o jsonpath="{.spec.ports[2].nodePort}")
+export ACE_MQ_PORT=$(kubectl get service ace2-ibm-ace-server-dev --namespace ace2 -o jsonpath="{.spec.ports[3].nodePort}")
+
+echo "HTTP workload can use: http://${ACE_NODE_IP}:${ACE_HTTP_PORT}"
+echo "HTTPS workload can use: https://${ACE_NODE_IP}:${ACE_HTTPS_PORT}"
+echo "MQ workload can use: ${ACE_NODE_IP}:${ACE_MQ_PORT}"
+```
+
