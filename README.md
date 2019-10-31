@@ -280,3 +280,36 @@ echo "HTTPS workload can use: https://${ACE_NODE_IP}:${ACE_HTTPS_PORT}"
 echo "MQ workload can use: ${ACE_NODE_IP}:${ACE_MQ_PORT}"
 ```
 
+Type the command `oc get pods`, and you will likely see this:
+
+```
+NAME                        READY     STATUS              RESTARTS   AGE
+ace-ibm-ace-server-dev-0   0/1       ContainerCreating   0          17s
+```
+
+If all goes well, it will eventually look like this:
+
+```
+NAME                        READY     STATUS    RESTARTS   AGE
+ace-ibm-ace-server-dev-0   1/1       Running   0          1m
+```
+
+If you do not see a pod starting, you can try the `oc get sts` command:
+
+```
+NAME                     DESIRED   CURRENT   AGE
+ace-ibm-ace-server-dev   1         0         3m
+```
+
+If current is indeed 0, then you can type `oc describe sts ace-ibm-ace-server-dev` to get an idea of what is going on.
+
+If you see something like this:
+
+```
+Events:
+  Type     Reason        Age               From                    Message
+  ----     ------        ----              ----                    -------
+  Warning  FailedCreate  1m (x12 over 1m)  statefulset-controller  create Pod ace-ibm-ace-server-dev-0 in StatefulSet ace-ibm-ace-server-dev failed error: pods "ace-ibm-ace-server-dev-0" is forbidden: unable to validate against any security context constraint: [fsGroup: Invalid value: []int64{888}: 888 is not an allowed group spec.containers[0].securityContext.securityContext.runAsUser: Invalid value: 888: must be in the ranges: [1000170000, 1000179999] spec.containers[0].securityContext.seLinuxOptions.level: Invalid value: "": must be s0:c13,c7 spec.containers[0].securityContext.seLinuxOptions.type: Invalid value: "spc_t": must be  capabilities.add: Invalid value: "AUDIT_WRITE": capability may not be added capabilities.add: Invalid value: "CHOWN": capability may not be added capabilities.add: Invalid value: "DAC_OVERRIDE": capability may not be added capabilities.add: Invalid value: "FOWNER": capability may not be added capabilities.add: Invalid value: "FSETID": capability may not be added capabilities.add: Invalid value: "KILL": capability may not be added capabilities.add: Invalid value: "NET_BIND_SERVICE": capability may not be added capabilities.add: Invalid value: "NET_RAW": capability may not be added capabilities.add: Invalid value: "SETFCAP": capability may not be added capabilities.add: Invalid value: "SETGID": capability may not be added capabilities.add: Invalid value: "SETPCAP": capability may not be added capabilities.add: Invalid value: "SETUID": capability may not be added capabilities.add: Invalid value: "SYS_CHROOT": capability may not be added]
+```
+
+Then your ACE/MQ service account has not been added to the `ibm-anyuid-scc` security context
