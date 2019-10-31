@@ -124,7 +124,7 @@ $ oc apply -f ./ibm-anyuid-scc.yaml
 Execute the following commands to create an `ace` project and allow tiller to install to this project:
 
 ```
-$ oc new project ace
+$ oc new-project ace
 $ oc policy add-role-to-user admin "system:serviceaccount:tiller:tiller"
 $ oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:ace
 ```
