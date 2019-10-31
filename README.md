@@ -285,6 +285,14 @@ echo "HTTPS workload can use: https://${ACE_NODE_IP}:${ACE_HTTPS_PORT}"
 echo "MQ workload can use: ${ACE_NODE_IP}:${ACE_MQ_PORT}"
 ```
 
+Typing the command `helm list` should show you something like this:
+
+```
+NAME    REVISION        UPDATED                         STATUS          CHART                           APP VERSION     NAMESPACE
+ace     1               Wed Oct 30 15:13:00 2019        DEPLOYED        ibm-ace-server-dev-2.1.0        11.0.0.5        ace
+```
+
+
 Type the command `oc get pods`, and you will likely see this:
 
 ```
