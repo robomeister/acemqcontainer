@@ -134,9 +134,48 @@ The environment is now ready.  The rest of the following commands can be execute
 
 ## Step 5 - Install Helm client onto Workstation
 
-You can download the helm client here:
+You can download the helm client for Windows and Linux here:
 
 ```
 https://get.helm.sh/helm-v2.14.1-windows-amd64.zip
+https://get.helm.sh/helm-v2.14.1-linux-amd64.tar.gz
 ```
+
+Extract the helm.exe or helm binary and place it in an executable path.
+
+You will also need the oc command line tool, you can download it for Windows and Linux here:
+
+```
+https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-windows.zip
+https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
+```
+
+Extract the oc.exe and kubectl.exe or oc and kubectl executables and place them in an executable path.
+
+Once you have the tools installed, log into OpenShift on the command line and verify the helm and tiller install:
+
+For Windows:
+
+```
+ oc login <openshift endpoint> --username=username --password=password
+ set TILLER_NAMESPACE=tiller
+ helm version
+```
+
+For Linux:
+
+```
+$ oc login <openshift endpoint> --username=username --password=password
+$ export TILLER_NAMESPACE=tiller
+$ helm version
+```
+
+You should see the following:
+
+```
+Client: &version.Version{SemVer:"v2.14.1", GitCommit:"5270352a09c7e8b6e8c9593002a73535276507c0", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.14.1", GitCommit:"5270352a09c7e8b6e8c9593002a73535276507c0", GitTreeState:"clean"}
+```
+
+
 
