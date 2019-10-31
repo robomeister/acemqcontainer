@@ -1,5 +1,7 @@
 # Installing ACE/MQ into OpenShift using HELM with Minimal Permissions
 
+The following operations need to be executed by someone with `cluster-admin` privileges:
+
 ## Step 1 - Install Tiller
 
 Install Tiller into it's own namespace:
@@ -49,10 +51,11 @@ Copy the above text into `tiller-roles.yaml` and execute the following command:
 
 `oc apply -f ./tiller-roles.yaml`
 
+Please note these permissions satisfy the requirements to install the ACE/MQ container only.  Other helm charts may require the same, more or less permissions.  Most organizations simply assign the `cluster-admin` role to the tiller service account.
 
-## Step x - Create Security Context
+## Step 3 - Create Proper Security Context
 
-If it doesn't already exist, create the `ibm-anyuid-scc` security context using the following template:
+If it doesn't yet already exist, create the `ibm-anyuid-scc` security context using the following template:
 
 ```
 kind: SecurityContextConstraints
@@ -111,5 +114,15 @@ volumes:
 Copy the text into a file named `ibm-anyuid-scc.yaml` and execute the following command:
 
 ```
-oc apply -f ./ibm-anyuid-scc.yaml
+$ oc apply -f ./ibm-anyuid-scc.yaml
 ```
+
+## Step 4 - Create a Project for ACE/MQ and allow Tiller access
+
+Execute the following commands to create an `ace` project allow tiller to install to this project:
+
+```
+$ oc new project ace
+$ oc policy add-role-to-user admin "system:serviceaccount:tiller:tiller"
+```
+
