@@ -14,7 +14,7 @@ This template will create the service account `system:serviceaccount:tiller:till
 
 ## Step 2 - Assign Permissions to Tiller that will enable ACE/MQ install
 
-The ACE/MQ Helm chart creates an MQ service account and sets it up with a cluster role binding.  In order for tiller to execute these operations, it needs some extra permissions.  
+The ACE/MQ Helm chart creates an MQ service account and sets it up with a cluster role binding.  To allow tiller to execute these operations, it needs some extra permissions.  
 
 ```
 apiVersion: authorization.openshift.io/v1
