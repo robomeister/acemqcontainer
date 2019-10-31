@@ -53,6 +53,8 @@ Copy the above text into `tiller-roles.yaml` and execute the following command:
 
 Please note these permissions satisfy the requirements to install the ACE/MQ container only.  Other helm charts may require the same, more or less permissions.  Most organizations simply assign the `cluster-admin` role to the tiller service account.
 
+If desired, once the install has completed, the permissions can be removed.  Please note, however, that when a helm update or delete is to occur, the permissions will need to be added again.
+
 ## Step 3 - Create Proper Security Context
 
 If it doesn't yet already exist, create the `ibm-anyuid-scc` security context using the following template:
@@ -119,10 +121,22 @@ $ oc apply -f ./ibm-anyuid-scc.yaml
 
 ## Step 4 - Create a Project for ACE/MQ and allow Tiller access
 
-Execute the following commands to create an `ace` project allow tiller to install to this project:
+Execute the following commands to create an `ace` project and allow tiller to install to this project:
 
 ```
 $ oc new project ace
 $ oc policy add-role-to-user admin "system:serviceaccount:tiller:tiller"
+```
+
+If desired, once the helm install has completed, the role can be removed.  Please note, however, that when a helm update or delete is to occur, the role will need to be added again.
+
+The environment is now ready.  The rest of the following commands can be executed by the user:
+
+## Step 5 - Install Helm client onto Workstation
+
+You can download the helm client here:
+
+```
+https://get.helm.sh/helm-v2.14.1-windows-amd64.zip
 ```
 
