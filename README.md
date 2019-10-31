@@ -2,6 +2,9 @@
 
 
 ## Step 1
+
+If it doesn't already exist, create the `ibm-anyuid-scc` security context using the following template:
+
 ```
 kind: SecurityContextConstraints
 apiVersion: security.openshift.io/v1
