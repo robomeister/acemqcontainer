@@ -58,3 +58,9 @@ volumes:
 - projected
 - secret
 ```
+
+Copy the text into a file named `ibm-anyuid-scc.yaml` and execute the following command:
+
+```
+oc apply -f ./ibm-anyuid-scc.yaml
+```
