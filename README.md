@@ -276,9 +276,9 @@ If you launched the deploy from the ACE Dashboard, then you can return to the AC
 The HTTP and HTTPS endpoints for the ACE Integration Server are exposed with a NodePort by default.
 
 export ACE_NODE_IP=$(kubectl get configmap -n kube-public ibmcloud-cluster-info   -o jsonpath="{.data.proxy_address}")
-export ACE_HTTP_PORT=$(kubectl get service ace2-ibm-ace-server-dev --namespace ace2 -o jsonpath="{.spec.ports[1].nodePort}")
-export ACE_HTTPS_PORT=$(kubectl get service ace2-ibm-ace-server-dev --namespace ace2 -o jsonpath="{.spec.ports[2].nodePort}")
-export ACE_MQ_PORT=$(kubectl get service ace2-ibm-ace-server-dev --namespace ace2 -o jsonpath="{.spec.ports[3].nodePort}")
+export ACE_HTTP_PORT=$(kubectl get service ace-ibm-ace-server-dev --namespace ace -o jsonpath="{.spec.ports[1].nodePort}")
+export ACE_HTTPS_PORT=$(kubectl get service ace-ibm-ace-server-dev --namespace ace -o jsonpath="{.spec.ports[2].nodePort}")
+export ACE_MQ_PORT=$(kubectl get service ace-ibm-ace-server-dev --namespace ace -o jsonpath="{.spec.ports[3].nodePort}")
 
 echo "HTTP workload can use: http://${ACE_NODE_IP}:${ACE_HTTP_PORT}"
 echo "HTTPS workload can use: https://${ACE_NODE_IP}:${ACE_HTTPS_PORT}"
