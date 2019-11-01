@@ -24,7 +24,7 @@ If you can't download an image over the internet, then perform the following fro
 
 ```
 wget https://github.com/openshift/origin/raw/master/examples/helm/tiller-template.yaml
-docker pull gcr.io/kubernetes-helm/tiller:2.14.1
+docker pull gcr.io/kubernetes-helm/tiller:v2.14.1
 ```
 
 Put the tiller image into your local container registry, then update the tiller-template.yaml file with the name of the new image:
