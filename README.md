@@ -20,6 +20,25 @@ oc process -f https://github.com/openshift/origin/raw/master/examples/helm/tille
 
 This template will create the service account `system:serviceaccount:tiller:tiller`
 
+If you can't download an image over the internet, then perform the following from a machine that can:
+
+```
+wget https://github.com/openshift/origin/raw/master/examples/helm/tiller-template.yaml
+docker pull gcr.io/kubernetes-helm/tiller:2.14.1
+```
+
+Put the tiller image into your local container registry, then update the tiller-template.yaml file with the name of the new image:
+
+```
+image: <local-registry-coordinates>/tiller:${HELM_VERSION}
+```
+Then perform:
+
+```
+oc process -f ./tiller-template.yaml -p TILLER_NAMESPACE="${TILLER_NAMESPACE}" -p HELM_VERSION=v2.14.1 | oc create -f -
+```
+
+
 ## Step 2 - Assign Permissions to Tiller that will enable ACE/MQ install
 
 The ACE/MQ Helm chart creates a new service account and sets it up with a cluster role binding.  To allow tiller to execute these operations, it needs some extra permissions.  
