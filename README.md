@@ -217,11 +217,12 @@ helm fetch ibm-charts/ibm-ace-server-dev
 
 Uncompress the `ibm-ace-server-dev-2.x.0.tgz` file into a new directory and copy the ibm-ace-server-dev/values.yaml file up one level.
 
-Inside the values.yaml file, update the following properties:
+Inside the values.yaml file, update the following properties (they are scattered around the values.yaml):
 
 ```
 license: "accept"
 imageType: acemqserver
+initVolumeAsRoot: false
 dashboardEnabled: false
 ```
 
