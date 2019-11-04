@@ -223,8 +223,6 @@ imageType: acemqserver
 dashboardEnabled: false
 ```
 
-We disable the monitoring dashboard, as it is Cloud Pak dependant and we are installing ACE/MQ on its own.
-
 If your container images are available locally, then update the following properties:
 
 ```
@@ -284,9 +282,9 @@ A quick and easy way to build this secret is to create configuration files with 
 ```
 oc create secret generic <custom secret name for this deployment> --from-file=./setdbparms --from-file=./mqsc
 ```
-In the above example, a customized `setdbparms` and `mqsc` file are collected into the secret.  Again please note the customization file names **must be exactly the same** as the elements in the `data` stanza above.
+In the above example, customized `setdbparms` and `mqsc` files are collected into the secret.  Again please note the customization file names **must be exactly the same** as the elements in the `data` stanza above.
 
-You must specify the secret name in the `values.yaml` file with the `configurationSecret` stanza:
+After creating the secret, you **must** specify the secret name in the `values.yaml` file with the `configurationSecret` stanza:
 
 ```
 # The secret containing server confiration
