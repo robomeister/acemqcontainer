@@ -244,7 +244,57 @@ Finally, you will want to update the storage class name property to the dynamic 
 storageClassName: ""
 ```
 
-### Step 8 - Install ACE/MQ
+### Step 8 - Create Customization Secret
+
+To enable deployment-by-deployment customization of ACE/MQ, you can combine configuration files into a single secret that a given deployment uses.  The secret is constructed like this:
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <custom secret name for this deployment>
+type: Opaque
+data:
+  adminPassword:
+  agentc:
+  agentp:
+  agentx:
+  appPassword:
+  ca.crt:
+  extensions:
+  keystoreCert-<alias>:
+  keystoreKey-<alias>:
+  keystorePass-<alias>:
+  keystorePassword:
+  mqsc:
+  odbcini:
+  policy:
+  policyDescriptor:
+  serverconf:
+  setdbparms:
+  switch:
+  tls.cert
+  tls.key
+  truststoreCert-<alias>:
+  truststorePassword:
+  ```
+  
+A quick and easy way to build this secret is to create configuration files with the **exact same** name as the elements in the `data` stanza above.  Collect up these files into the same location, and then execute the following script in the namespace where the deployment will happen:
+  
+```
+oc create secret generic <custom secret name for this deployment> --from-file=./setdbparms --from-file=./mqsc
+```
+In the above example, a customized `setdbparms` and `mqsc` file are collected into the secret.  Again please note the customization file names **must be exactly the same** as the elements in the `data` stanza above.
+
+You must specify the secret name in the `values.yaml` file with the `configurationSecret` stanza:
+
+```
+# The secret containing server confiration
+configurationSecret: <custom secret name for this deployment>
+```
+
+
+### Step 9 - Install ACE/MQ
 
 Perform the following commands:
 
