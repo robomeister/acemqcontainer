@@ -18,9 +18,9 @@ set TILLER_NAMESPACE=tiller
 oc process -f https://github.com/openshift/origin/raw/master/examples/helm/tiller-template.yaml -p TILLER_NAMESPACE="${TILLER_NAMESPACE}" -p HELM_VERSION=v2.14.1 | oc create -f -
 ```
 
-This template will create the service account `system:serviceaccount:tiller:tiller`
+This template will create the service account `system:serviceaccount:tiller:tiller`.  Note you can install tiller into whichever namespace you like, with the resulting service account being `system:serviceaccount:<namespace>:tiller`.  The rest of the instructions assume `tiller` as the namespace, but you can update accordingly.
 
-If you can't download an image over the internet, then perform the following from a machine that can:
+If you can't download the tiller image over the internet, then perform the following from a machine that can:
 
 ```
 wget https://github.com/openshift/origin/raw/master/examples/helm/tiller-template.yaml
