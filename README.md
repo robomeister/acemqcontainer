@@ -148,7 +148,7 @@ oc apply -f ./ibm-anyuid-scc.yaml
 
 ## Step 4 - Create a Project for ACE/MQ, allow Tiller access, and set the Security Context
 
-Execute the following commands to create an `ace` project and allow tiller to install to this project:
+Execute the following commands to create an `ace` project and allow tiller to install to this project (you can use whatever project name you like.  The instructions below assume `ace`):
 
 ```
 oc new-project ace
